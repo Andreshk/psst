@@ -1,7 +1,7 @@
 module Main (main) where
 
 import Prelude hiding (lines, unlines, readFile, writeFile)
-import System.Environment (getArgs)
+import System.Environment (getArgs, withArgs)
 import System.Random (mkStdGen, randomRs, random, StdGen(..))
 import qualified Data.ByteString as B (readFile, writeFile)
 import Data.Text (pack, unpack, lines, unlines)     -- requires "text" package
@@ -21,3 +21,7 @@ main = do
             (newSeed, _) = random gen :: (Int, StdGen)
         mapM_ (putStrLn . unpack) chosen
         B.writeFile fileName . encodeUtf8 . unlines $ (pack $ show newSeed):names
+
+-- User-friendly version - to be called from GHCI or WinGHCI
+psst :: String -> Int -> IO ()
+psst fileName k = withArgs [fileName, show k] main
