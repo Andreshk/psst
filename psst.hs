@@ -1,4 +1,4 @@
-module Main (main) where
+module Main (main, psst) where
 
 import Prelude hiding (lines, unlines, readFile, writeFile)
 import System.Environment (getArgs, withArgs)
