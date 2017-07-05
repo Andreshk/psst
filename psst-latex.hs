@@ -11,14 +11,13 @@ import Control.Monad (liftM)
 main :: IO ()
 main = do
     (fileName, templateName, resultName) <- parseArgs
-    (seed:names) <- liftM lines $ fileToText fileName
+    (seed:message:names) <- liftM lines $ fileToText fileName
     let gen = mkStdGen . read . unpack $ seed
-        message = pack "Псст! Сесия е. Вземи си изпит!"
         chosen = map (names!!) $ randomRs (0, (length names) - 1) gen
         newSeed = fst $ random gen :: Int
     pieces <- liftM (splitOn (pack "--split")) $ fileToText templateName
     textToFile resultName (buildLatex pieces (message:chosen))
-    textToFile fileName (unlines $ (pack $ show newSeed):names)
+    textToFile fileName (unlines $ (pack $ show newSeed):message:names)
     putStrLn "Done!"
 
 parseArgs :: IO (String, String, String)

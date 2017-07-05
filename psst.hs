@@ -8,14 +8,15 @@ import Data.Text (Text(..), pack, unpack, lines, unlines)   -- requires "text" p
 import Data.Text.Encoding (encodeUtf8, decodeUtf8)  -- requires "text" package 
 import Control.Monad (liftM)
 
+main :: IO ()
 main = do
     (fileName, k) <- parseArgs
-    (seed:names) <- liftM (lines . decodeUtf8) $ B.readFile fileName
+    (seed:message:names) <- liftM (lines . decodeUtf8) $ B.readFile fileName
     let gen = mkStdGen . read . unpack $ seed
         chosen = map (names!!) $ randomRs (0, (length names) - 1) gen
         newSeed = fst $ random gen :: Int
-    mapM_ (putStrLn . unpack) (take k chosen)
-    textToFile fileName (unlines $ (pack $ show newSeed):names)
+    mapM_ (putStrLn . unpack) $ message:(take k chosen)
+    textToFile fileName (unlines $ (pack $ show newSeed):message:names)
 
 -- User-friendly version - to be called from GHCI or WinGHCI
 psst :: String -> Int -> IO ()
